@@ -16,7 +16,7 @@ before_script:
   tags:
     - k8s
   script:
-    - echo "模拟测试完成"
+    - echo "模拟测试"
 ########################### build阶段 ###########################
 build_image:
   image: registry.cn-hangzhou.aliyuncs.com/twilikiss/kaniko-project-executor:v1.9.0-debug
