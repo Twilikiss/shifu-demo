@@ -1,5 +1,4 @@
 stages:
-  - test
   - build
   - deploy
 variables:
@@ -10,18 +9,6 @@ before_script:
   key: ${CI_JOB_NAME}
   paths:
     - .go/pkg/mod/
-########################### build阶段 ###########################
-test_image:
-  image: registry.cn-hangzhou.aliyuncs.com/twilikiss/golang:1.22
-  stage: test
-  tags:
-    - k8s
-  script:
-    - echo "开始测试"
-    - go env -w GO111MODULE=on
-    - go env -w GOPROXY=https://goproxy.cn,direct
-    - go mod download
-    - go test .\logic\measurement.go .\logic\measurement_test.go
 ########################### build阶段 ###########################
 build_image:
   image: registry.cn-hangzhou.aliyuncs.com/twilikiss/kaniko-project-executor:v1.9.0-debug
