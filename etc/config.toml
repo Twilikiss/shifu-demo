@@ -1,0 +1,3 @@
+[ServiceConfig]
+Url = "http://deviceshifu-plate-reader.deviceshifu.svc.cluster.local/get_measurement"
+Time = "1" # 这里只能填入整数

@@ -1,0 +1,48 @@
+stages:
+  - test
+  - build
+  - deploy
+variables:
+  GOPATH: ${CI_PROJECT_DIR}/.go
+before_script:
+  - mkdir -p .go
+.cache:
+  key: ${CI_JOB_NAME}
+  paths:
+    - .go/pkg/mod/
+########################### build阶段 ###########################
+test_image:
+  image: registry.cn-hangzhou.aliyuncs.com/twilikiss/golang:1.22
+  stage: test
+  tags:
+    - k8s
+  script:
+    - echo "开始测试"
+    - go test .\logic\measurement.go .\logic\measurement_test.go
+########################### build阶段 ###########################
+build_image:
+  image: registry.cn-hangzhou.aliyuncs.com/twilikiss/kaniko-project-executor:v1.9.0-debug
+  stage: build
+  tags:
+    - k8s
+  script:
+    - mkdir -p /kaniko/.docker
+
+    - echo "{\"auths\":{\"https://testharbor.com\":{\"auth\":\"YWRtaW46SGFyYm9yMTIzNDU=\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "testharbor.com/shifu-demo/shifu-demo:${CI_COMMIT_SHA}" --skip-tls-verify
+    - echo "shifu-demo上传harbor"
+########################### deploy阶段 ###########################
+deploy_image:
+  image: registry.cn-hangzhou.aliyuncs.com/twilikiss/kubectl:1.24.0
+  stage: deploy
+  tags:
+    - k8s
+  script:
+    - echo "开始部署"
+    - mkdir -p $HOME/.kube
+    - echo "$KUBERNETES_SECRET" >> "$HOME/.kube/config"
+    - echo "$KUBERNETES_SECRET"
+    - kubectl version
+    - kubectl  get pods -A
+    - sed -i "s#{VERSION}#${CI_COMMIT_SHA}#g" ./k8s-shifu.yaml
+    - kubectl apply -f ./k8s-shifu.yaml -n elcoin
