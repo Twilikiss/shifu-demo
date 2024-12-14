@@ -11,16 +11,16 @@ import (
 var Cfg *pollConfig
 
 func init() {
-	path := ".\\demo01\\etc\\config.toml"
+	path := "demo01/etc/config.toml"
 	if !fileIsExist(path) {
 		log.Error("配置文件不存在")
-		panic("[.\\demo01\\etc\\config.toml]无法找到配置文件")
+		panic("[etc\\config.toml]无法找到配置文件")
 	}
 	Cfg = new(pollConfig)
 	_, err := toml.DecodeFile(path, &Cfg)
 	if err != nil {
 		log.Error("配置文件读取失败")
-		panic("[.\\demo01\\etc\\config.toml]无法找到配置文件")
+		panic("[etc\\config.toml]无法找到配置文件")
 	}
 }
 
