@@ -11,7 +11,7 @@ import (
 var Cfg *pollConfig
 
 func init() {
-	path := "demo01/etc/config.toml"
+	path := "../etc/config.toml"
 	if !fileIsExist(path) {
 		log.Error("配置文件不存在")
 		panic("[etc\\config.toml]无法找到配置文件")
