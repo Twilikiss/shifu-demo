@@ -43,4 +43,4 @@ deploy_image:
     - kubectl version
     - kubectl  get pods -A
     - sed -i "s#{VERSION}#${CI_COMMIT_SHA}#g" ./k8s-shifu.yaml
-    - kubectl apply -f ./k8s-shifu.yaml -n elcoin
+    - kubectl apply -f ./k8s-shifu.yaml -n shifu-demo
